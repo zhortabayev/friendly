@@ -2,24 +2,21 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class FriendlyNumbers {
 	
-	public static volatile int theCounter = 0;
-
 	public static void main(String [] args) {
 
 		long startTime = System.currentTimeMillis();
 
 		if(args.length != 1) {
-			System.out.println("Please specify input file"); 
+			System.out.println("Please specify input file "); 
 			return;
 		}
 		
-		String input = args[0];		
+		String input = args[0];	
+				
 		int [] numbers = new int [12];
 		int counter = 0;		
 
@@ -60,40 +57,31 @@ public class FriendlyNumbers {
 			
 			System.out.println("Among numbers " + start + " and " + end);
 
-			int jumper = 1000;
-			int s = start;
-			while(s <= end) {
-				if(jumper > 20) jumper = jumper - 5;
-				new FriendlyThread(s, s + jumper).start();;				
-				s = s + jumper; 				
-			}
+			int processors = Runtime.getRuntime().availableProcessors();
+			int inter = end - start;			
+			int theChunk = inter / processors + 1;
 			
-			new FriendlyThread(s - jumper, end + 1).start();;				
+			for(int i = start; i < end; i = i + theChunk) {
+				if(i + theChunk <= end)
+					new FriendlyThread(i, i + theChunk).start();
+				else new FriendlyThread(i, end).start();
+			}
 			
 			while(Thread.activeCount() != 1) {
 				/*wait while working */
 			}
 			
-			ParallelOutput po0 = new ParallelOutput(numbers[outer], numbers[outer] + (end - start)/8, end);
-			po0.start();	
-				
-			ParallelOutput po1 = new ParallelOutput(numbers[outer] + (end - start)/8 + 1, numbers[outer] + (end - start)/4, end);
-			po1.start();		
-
-			ParallelOutput po2 = new ParallelOutput(numbers[outer] + (end - start)/4 + 1, numbers[outer] + (end - start)/2, end);
-			po2.start();			
-
-			ParallelOutput po3 = new ParallelOutput(numbers[outer] + (end - start)/2 + 1, numbers[outer] + 3 * (end - start)/4, end);
-			po3.start();
-
-			ParallelOutput po4 = new ParallelOutput(numbers[outer] + 3 * (end - start)/4 + 1, end, end);
-			po4.start();
+			for(double k: FriendlyThread.ratiosAndNumbers.keySet())
+				if(FriendlyThread.ratiosAndNumbers.get(k).size() > 1) {
+					System.out.print("Friendly numbers: ");
+					for(int i: FriendlyThread.ratiosAndNumbers.get(k))
+						System.out.print(i + " ");
+					System.out.println();
+				}
 			
-			while(Thread.activeCount() != 1) {
-				/*wait while working */
-			}			
-			FriendlyThread.numbersAndRatios.clear();;
-		}		
+			FriendlyThread.ratiosAndNumbers.clear();
+		}
+		
 		long stopTime = System.currentTimeMillis();
 	    long elapsedTime = stopTime - startTime;
 	    System.out.println("The time spent is: "  + elapsedTime);

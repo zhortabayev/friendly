@@ -1,18 +1,15 @@
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FriendlyThread extends Thread{
 
-	//public static volatile int trueCounter = 0;
-	//public static volatile Map<Integer, Double> numbersAndRatios = new HashMap<Integer, Double>();
 	int number;
 	int till;
-	public static volatile int instanceCounter;
-
-	public static Map<Integer, Double> numbersAndRatios = Collections.synchronizedMap(new HashMap<Integer, Double>());
+	public static Map<Double, ArrayList<Integer>> ratiosAndNumbers = Collections.synchronizedMap(new HashMap<Double, ArrayList<Integer>>());
+	
 	public FriendlyThread(int number, int till) {
-		instanceCounter++;
 		this.number = number;
 		this.till = till;
 	}
@@ -20,16 +17,16 @@ public class FriendlyThread extends Thread{
 	public void run() {
 		// TODO Auto-generated method stub
 		for(int i = number; i < till; i++) {
-			int sum = getDivisorsSum(i);	
-			numbersAndRatios.put(i, (double) sum/(double) i);		
+			int sum = getDivisorsSum(i);				
+			double temp = (double) sum/(double) i;
+			if(ratiosAndNumbers.get(temp) == null) {
+				ArrayList<Integer> al = new ArrayList<Integer>();
+				al.add(i);
+				ratiosAndNumbers.put(temp, al);
+			} else ratiosAndNumbers.get(temp).add(i);												
 		}
-				//trueCounter++;
 	}
-	
-	protected void finalize() {
-        instanceCounter--;
-    }
-	
+
 	private int getDivisorsSum(int n) {	
 		int sum = 0;
 		int theNumber = n;

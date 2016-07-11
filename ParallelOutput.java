@@ -16,7 +16,4 @@ public class ParallelOutput extends Thread {
 				if(FriendlyThread.numbersAndRatios.get(i).equals(FriendlyThread.numbersAndRatios.get(j)))
 					System.out.println(i + " and " + j + " are FRIENDLY");
 	}
-	
-	
-
 }

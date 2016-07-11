@@ -8,7 +8,7 @@ public class FriendlyNumbers {
 	
 	public static void main(String [] args) {
 
-		long startTime = System.currentTimeMillis();
+		double startTime = System.currentTimeMillis();
 
 		if(args.length != 1) {
 			System.out.println("Please specify input file "); 
@@ -82,8 +82,8 @@ public class FriendlyNumbers {
 			FriendlyThread.ratiosAndNumbers.clear();
 		}
 		
-		long stopTime = System.currentTimeMillis();
-	    long elapsedTime = stopTime - startTime;
-	    System.out.println("The time spent is: "  + elapsedTime);
+		double stopTime = System.currentTimeMillis();
+	    double elapsedTime = (stopTime - startTime) / 1000 ;
+	    System.out.println("The time spent is: "  + elapsedTime + "s");
 	}
 }

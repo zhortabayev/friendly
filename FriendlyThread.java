@@ -7,18 +7,28 @@ public class FriendlyThread extends Thread{
 	//public static volatile int trueCounter = 0;
 	//public static volatile Map<Integer, Double> numbersAndRatios = new HashMap<Integer, Double>();
 	int number;
+	int till;
+	public static volatile int instanceCounter;
 
 	public static Map<Integer, Double> numbersAndRatios = Collections.synchronizedMap(new HashMap<Integer, Double>());
-	public FriendlyThread(int number) {
+	public FriendlyThread(int number, int till) {
+		instanceCounter++;
 		this.number = number;
+		this.till = till;
 	}
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		int sum = getDivisorsSum(number);	
-		numbersAndRatios.put(number, (double) sum/(double) number);
-		//trueCounter++;
+		for(int i = number; i < till; i++) {
+			int sum = getDivisorsSum(i);	
+			numbersAndRatios.put(i, (double) sum/(double) i);		
+		}
+				//trueCounter++;
 	}
+	
+	protected void finalize() {
+        instanceCounter--;
+    }
 	
 	private int getDivisorsSum(int n) {	
 		int sum = 0;

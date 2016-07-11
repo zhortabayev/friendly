@@ -2,6 +2,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class FriendlyNumbers {
@@ -58,12 +60,16 @@ public class FriendlyNumbers {
 			
 			System.out.println("Among numbers " + start + " and " + end);
 
-			while(start <= end) {
-				FriendlyThread ft = new FriendlyThread(start);				
-				ft.start();
-				start++; 		
+			int jumper = 1000;
+			int s = start;
+			while(s <= end) {
+				if(jumper > 20) jumper = jumper - 5;
+				new FriendlyThread(s, s + jumper).start();;				
+				s = s + jumper; 				
 			}
-						
+			
+			new FriendlyThread(s - jumper, end + 1).start();;				
+			
 			while(Thread.activeCount() != 1) {
 				/*wait while working */
 			}
